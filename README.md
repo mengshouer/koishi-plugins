@@ -1,0 +1,7 @@
+### plugins
+
+- @mengshouer/koishi-plugin-cat
+- @mengshouer/koishi-plugin-dog
+- @mengshouer/koishi-plugin-fox
+- @mengshouer/koishi-plugin-ping
+- @mengshouer/koishi-plugin-filelink

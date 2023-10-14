@@ -1,0 +1,34 @@
+{
+  "name": "@mengshouer/koishi-plugin-dog",
+  "description": "get a random dog image",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint src --ext .ts"
+  },
+  "homepage": "https://github.com/mengshouer/koishi-plugins",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mengshouer/koishi-plugins.git",
+    "directory": "plugins/dog"
+  },
+  "bugs": {
+    "url": "https://github.com/mengshouer/koishi-plugins/issues"
+  },
+  "keywords": [
+    "bot",
+    "chatbot",
+    "koishi",
+    "plugin",
+    "dog"
+  ],
+  "peerDependencies": {
+    "koishi": "^4.14.6"
+  }
+}

@@ -1,0 +1,13 @@
+root: true
+
+env:
+  browser: true
+  node: true
+  es2020: true
+
+globals:
+  NodeJS: true
+  KOISHI_CONFIG: true
+
+extends:
+  - "@koishijs/eslint-config"
