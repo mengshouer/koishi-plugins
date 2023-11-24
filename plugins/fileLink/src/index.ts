@@ -12,9 +12,8 @@ const videoSuffix = ['.mp4', '.avi', '.mkv', '.rmvb', '.flv', '.wmv', '.mpg', '.
 const soundSuffix = ['.mp3', '.wav', '.flac', '.ape', '.aac', '.ogg', '.wma']
 
 export function apply(ctx: Context) {
-  ctx.middleware((session, next) => {
+  ctx.platform('onebot').middleware((session, next) => {
     const { event } = session
-    if (event._type !== 'onebot') return next()
 
     for (const el of event.message.elements) {
       if (el.type === 'file') {

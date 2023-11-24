@@ -1,7 +1,7 @@
 {
   "name": "@mengshouer/koishi-plugin-filelink",
   "description": "get file link and automatically convert files",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -28,6 +28,12 @@
     "plugin",
     "filelink"
   ],
+  "koishi": {
+    "description": {
+      "en": "get file link and automatically convert files",
+      "zh": "获取文件链接并自动转为对应格式发送(图片/音乐/视频)，如果无法转换则返回文件链接"
+    }
+  },
   "peerDependencies": {
     "koishi": "^4.14.6"
   }

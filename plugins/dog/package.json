@@ -1,7 +1,7 @@
 {
   "name": "@mengshouer/koishi-plugin-dog",
   "description": "get a random dog image",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [

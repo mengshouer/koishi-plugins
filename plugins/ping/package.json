@@ -1,7 +1,7 @@
 {
   "name": "@mengshouer/koishi-plugin-ping",
   "description": "Ping pong to ensure your bot alive",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [

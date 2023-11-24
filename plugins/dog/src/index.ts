@@ -7,7 +7,7 @@ export interface Config {}
 export const Config: Schema<Config> = Schema.object({})
 
 export function apply(ctx: Context) {
-  ctx.command('dog').action(async () => {
+  ctx.command('getdog').action(async () => {
     let imageUrl: string
     try {
       const res = await ctx.http.get(
