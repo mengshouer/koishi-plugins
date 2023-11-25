@@ -1,0 +1,48 @@
+{
+  "name": "@mengshouer/koishi-plugin-barcodedecoder",
+  "description": "Decode a 1D or 2D barcode/qrcode from an image",
+  "version": "1.0.1",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint src --ext .ts"
+  },
+  "homepage": "https://github.com/mengshouer/koishi-plugins",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mengshouer/koishi-plugins.git",
+    "directory": "plugins/barcodeDecoder"
+  },
+  "bugs": {
+    "url": "https://github.com/mengshouer/koishi-plugins/issues"
+  },
+  "keywords": [
+    "bot",
+    "chatbot",
+    "koishi",
+    "plugin",
+    "barcode",
+    "qrcode",
+    "decoder",
+    "zxing",
+    "image"
+  ],
+  "koishi": {
+    "description": {
+      "en": "Decode a 1D or 2D barcode/qrcode from an image",
+      "zh": "从图片中解码1D或2D条形码/二维码"
+    }
+  },
+  "peerDependencies": {
+    "koishi": "^4.15.6"
+  },
+  "dependencies": {
+    "barcode-detector": "^2.1.3",
+    "zxing-wasm": "^1.0.0-rc.9"
+  }
+}

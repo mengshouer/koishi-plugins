@@ -5,3 +5,4 @@
 - @mengshouer/koishi-plugin-fox
 - @mengshouer/koishi-plugin-ping
 - @mengshouer/koishi-plugin-filelink
+- @mengshouer/koishi-plugin-barcodeDecoder
