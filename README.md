@@ -6,3 +6,4 @@
 - @mengshouer/koishi-plugin-ping
 - @mengshouer/koishi-plugin-filelink
 - @mengshouer/koishi-plugin-barcodeDecoder
+- @mengshouer/koishi-plugin-sandbox(fork from koishijs/webui)
