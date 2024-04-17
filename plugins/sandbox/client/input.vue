@@ -19,14 +19,17 @@ import segment from "@satorijs/element";
 
 const emit = defineEmits(["send", "update:modelValue"]);
 
-const props = withDefaults(defineProps<{
-  target?: HTMLElement | Document
-  modelValue?: string
-  placeholder?: string
-}>(), {
-  target: () => document,
-  modelValue: '',
-})
+const props = withDefaults(
+  defineProps<{
+    target?: HTMLElement | Document;
+    modelValue?: string;
+    placeholder?: string;
+  }>(),
+  {
+    target: () => document,
+    modelValue: "",
+  }
+);
 
 const text = computed({
   get: () => props.modelValue,
@@ -46,16 +49,16 @@ function onEnter(event: KeyboardEvent) {
       if (element.tagName === "BR") {
         message += "\n";
       } else if (element.tagName === "IMG") {
-        message += segment("image", {
-          url: element.getAttribute("src"),
+        message += segment("img", {
+          src: element.getAttribute("src"),
         }).toString();
       } else if (element.tagName === "AUDIO") {
         message += segment("audio", {
-          url: element.getAttribute("src"),
+          src: element.getAttribute("src"),
         }).toString();
       } else if (element.tagName === "VIDEO") {
         message += segment("video", {
-          url: element.getAttribute("src"),
+          src: element.getAttribute("src"),
         }).toString();
       }
     }
@@ -93,11 +96,15 @@ function handleDataTransfer(event: Event, transfer: DataTransfer) {
       return;
     }
 
-    const reader = new FileReader()
-    reader.addEventListener('load', function () {
-      emit('send', segment(type, { url: reader.result }).toString())
-    }, false)
-    reader.readAsDataURL(file)
+    const reader = new FileReader();
+    reader.addEventListener(
+      "load",
+      function () {
+        emit("send", segment(type, { src: reader.result }).toString());
+      },
+      false
+    );
+    reader.readAsDataURL(file);
   }
 }
 

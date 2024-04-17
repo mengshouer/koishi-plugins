@@ -1,7 +1,7 @@
 {
   "name": "@mengshouer/koishi-plugin-sandbox",
   "description": "Test Your Virtual Bot in Console, support image and text send, fork from koishijs/webui",
-  "version": "3.2.3",
+  "version": "3.2.5",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [
@@ -12,7 +12,8 @@
   "author": "Shigma <shigma10826@gmail.com>",
   "license": "AGPL-3.0",
   "scripts": {
-    "lint": "eslint src --ext .ts"
+    "lint": "eslint src --ext .ts",
+    "build": "tsc -b && koishi-console build"
   },
   "repository": {
     "type": "git",
@@ -52,15 +53,15 @@
     }
   },
   "peerDependencies": {
-    "@koishijs/plugin-console": "^5.19.5",
-    "koishi": "^4.15.6"
+    "@koishijs/plugin-console": "^5.28.3",
+    "koishi": "^4.17.4"
   },
   "devDependencies": {
-    "@koishijs/assets": "^1.0.3",
-    "@koishijs/client": "^5.19.5",
-    "@koishijs/plugin-console": "^5.19.5"
+    "@koishijs/assets": "^1.1.0",
+    "@koishijs/client": "^5.28.3",
+    "@koishijs/plugin-console": "^5.28.3"
   },
   "dependencies": {
-    "@koishijs/console": "^5.19.5"
+    "@koishijs/console": "^5.28.3"
   }
 }
