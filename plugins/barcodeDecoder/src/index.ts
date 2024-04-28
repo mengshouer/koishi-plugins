@@ -1,7 +1,7 @@
 import { Context, Schema, segment } from 'koishi'
 import {
-  type DecodeHints,
   readBarcodesFromImageFile,
+  type ReaderOptions,
 } from 'zxing-wasm'
 
 export const name = 'barcodeDecoder'
@@ -10,7 +10,7 @@ export interface Config {}
 
 export const Config: Schema<Config> = Schema.object({})
 
-const decodeHints: DecodeHints = {
+const decodeHints: ReaderOptions = {
   tryHarder: true,
   formats: ['QRCode', 'Aztec', 'Codabar', 'Code128', 'Code39', 'Code93', 'DataBar',
     'DataBarExpanded', 'DataMatrix', 'EAN-13', 'EAN-8', 'ITF', 'Linear-Codes',
@@ -44,8 +44,8 @@ const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 
 export function apply(ctx: Context) {
   ctx.command('barcodeDecoder [image:text]').action(async (_, image) => {
-    const [code] = segment.select(image || [], 'image')
-    const base64orUrl: string = code ? code.attrs.url : image
+    const [code] = segment.select(image || [], 'img')
+    const base64orUrl: string = code ? code.attrs.src : image
     try {
       const blob = base64orUrl.startsWith('data:image/')
         ? b64toBlob(base64orUrl)
