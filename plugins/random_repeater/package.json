@@ -1,0 +1,34 @@
+{
+  "name": "@mengshouer/koishi-plugin-random_repeater",
+  "description": "随机复读机，从第2条复读，即第3条重复消息开始有几率触发复读",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint src --ext .ts"
+  },
+  "homepage": "https://github.com/mengshouer/koishi-plugins",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mengshouer/koishi-plugins.git",
+    "directory": "plugins/random_repeater"
+  },
+  "bugs": {
+    "url": "https://github.com/mengshouer/koishi-plugins/issues"
+  },
+  "keywords": [
+    "bot",
+    "chatbot",
+    "koishi",
+    "plugin",
+    "repeater"
+  ],
+  "peerDependencies": {
+    "koishi": "^4.17.5"
+  }
+}
