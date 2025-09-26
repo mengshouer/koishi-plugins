@@ -1,0 +1,53 @@
+{
+  "name": "@mengshouer/koishi-plugin-news",
+  "description": "Daily news push plugin with 60s world overview",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "license": "MIT",
+  "author": "mengshouer",
+  "scripts": {
+    "lint": "eslint src --ext .ts",
+    "build": "yakumo build",
+    "clean": "yakumo clean"
+  },
+  "homepage": "https://github.com/mengshouer/koishi-plugins",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mengshouer/koishi-plugins.git",
+    "directory": "plugins/news"
+  },
+  "bugs": {
+    "url": "https://github.com/mengshouer/koishi-plugins/issues"
+  },
+  "keywords": [
+    "bot",
+    "chatbot",
+    "koishi",
+    "plugin",
+    "news",
+    "60s",
+    "daily",
+    "push",
+    "cron",
+    "schedule"
+  ],
+  "peerDependencies": {
+    "koishi": "^4.14.6"
+  },
+  "koishi": {
+    "description": {
+      "en": "Daily news push plugin with 60s world overview",
+      "zh": "60s 看世界新闻定时推送插件"
+    },
+    "service": {
+      "optional": [
+        "cron"
+      ]
+    }
+  }
+}
