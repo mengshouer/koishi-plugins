@@ -14,17 +14,15 @@ export class SandboxBot<C extends Context = Context> extends Bot<C, SandboxBot.C
 
   hidden = true
   internal = {}
-  clients = new Set<Client>()
 
-  constructor(ctx: C, config: SandboxBot.Config) {
-    super(ctx, config)
+  constructor(ctx: C, public client: Client, config: SandboxBot.Config) {
+    super(ctx, config, 'sandbox')
     this.selfId = config.selfId
     this.platform = config.platform
     this.user.name = 'koishi'
   }
 
   async request<T = any>(method: string, data = {}) {
-    const client = [...this.clients][0]
     const nonce = Math.random().toString(36).slice(2)
     return new Promise<T>((resolve, reject) => {
       const dispose1 = this.ctx.on('sandbox/response', (nonce2, data) => {
@@ -38,7 +36,7 @@ export class SandboxBot<C extends Context = Context> extends Bot<C, SandboxBot.C
         dispose2()
         reject(new Error('timeout'))
       }, Time.second * 5)
-      client.send({
+      this.client.send({
         type: 'sandbox/request',
         body: { method, data, nonce },
       })

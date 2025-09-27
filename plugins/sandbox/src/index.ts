@@ -1,8 +1,11 @@
 import { $, Context, Dict, Random, Schema, Universal, User } from 'koishi'
-import { DataService } from '@koishijs/console'
-import { resolve } from 'path'
+import { Client, DataService } from '@koishijs/console'
+import {} from '@koishijs/plugin-server'
+import { extname, resolve } from 'path'
 import { SandboxBot } from './bot'
 import zhCN from './locales/zh-CN.yml'
+import { createReadStream } from 'fs'
+import { fileURLToPath } from 'url'
 
 declare module 'koishi' {
   interface Events {
@@ -37,11 +40,19 @@ export interface Message {
 
 export const filter = false
 export const name = 'uSandbox'
-export const inject = ['console']
+export const inject = ['console', 'server']
 
-export interface Config {}
+export interface Config {
+  fileServer: {
+    enabled: boolean
+  }
+}
 
-export const Config: Schema<Config> = Schema.object({})
+export const Config: Schema<Config> = Schema.object({
+  fileServer: Schema.object({
+    enabled: Schema.boolean().default(false).description('是否提供本地静态文件服务 (请勿在暴露在公网的设备上开启此选项)。')
+  }),
+})
 
 class SandboxService extends DataService<Dict<number>> {
   static inject = ['database']
@@ -64,7 +75,13 @@ class SandboxService extends DataService<Dict<number>> {
 export function apply(ctx: Context, config: Config) {
   ctx.plugin(SandboxService)
 
-  ctx.console.addEntry({
+  ctx.console.addEntry(process.env.KOISHI_BASE ? [
+    process.env.KOISHI_BASE + '/dist/index.js',
+    process.env.KOISHI_BASE + '/dist/style.css',
+  ] : process.env.KOISHI_ENV === 'browser' ? [
+    // @ts-ignore
+    import.meta.url.replace(/\/src\/[^/]+$/, '/client/index.ts'),
+  ] : {
     dev: resolve(__dirname, '../client/index.ts'),
     prod: resolve(__dirname, '../dist'),
   })
@@ -81,12 +98,16 @@ export function apply(ctx: Context, config: Config) {
     }
   }
 
-  ctx.console.addListener('sandbox/send-message', async function (platform, userId, channel, content, quote) {
-    const bot = bots[platform] ||= new SandboxBot(ctx, {
+  const ensureBot = (platform: string, client: Client) => {
+    // assert unique platform
+    return bots[platform] ||= new SandboxBot(ctx, client, {
       platform,
       selfId: 'koishi',
     })
-    bot.clients.add(this)
+  }
+
+  ctx.console.addListener('sandbox/send-message', async function (platform, userId, channel, content, quote) {
+    const bot = ensureBot(platform, this)
     const id = Random.id()
     this.send({
       type: 'sandbox/message',
@@ -104,11 +125,7 @@ export function apply(ctx: Context, config: Config) {
   }, { authority: 4 })
 
   ctx.console.addListener('sandbox/delete-message', async function (platform, userId, channel, messageId) {
-    const bot = bots[platform] ||= new SandboxBot(ctx, {
-      platform,
-      selfId: 'koishi',
-    })
-    bot.clients.add(this)
+    const bot = ensureBot(platform, this)
     const session = bot.session(createEvent(userId, channel))
     session.type = 'message-deleted'
     session.messageId = messageId
@@ -116,28 +133,39 @@ export function apply(ctx: Context, config: Config) {
   }, { authority: 4 })
 
   ctx.console.addListener('sandbox/get-user', async function (platform, pid) {
-    if (!ctx.database) return
-    const [binding] = await ctx.database.get('binding', { platform, pid }, ['aid'])
-    if (binding) return ctx.database.getUser(platform, pid)
-    return ctx.database.createUser(platform, pid, {
+    const database = ctx.get('database')
+    if (!database) return
+    const [binding] = await database.get('binding', { platform, pid }, ['aid'])
+    if (binding) return database.getUser(platform, pid)
+    return database.createUser(platform, pid, {
       authority: 1,
     })
   }, { authority: 4 })
 
   ctx.console.addListener('sandbox/set-user', async function (platform, pid, data) {
-    if (!ctx.database) return
-    const [binding] = await ctx.database.get('binding', { platform, pid }, ['aid'])
+    const bot = ensureBot(platform, this)
+    const session = bot.session(createEvent(pid, '#'))
+    if (data) {
+      session.type = 'guild-member-added'
+      ctx.emit('guild-member-added', session)
+    } else {
+      session.type = 'guild-member-removed'
+      ctx.emit('guild-member-removed', session)
+    }
+    const database = ctx.get('database')
+    if (!database) return
+    const [binding] = await database.get('binding', { platform, pid }, ['aid'])
     if (!binding) {
       if (!data) return
-      await ctx.database.createUser(platform, pid, {
+      await database.createUser(platform, pid, {
         authority: 1,
         ...data,
       })
     } else if (!data) {
-      await ctx.database.remove('user', binding.aid)
-      await ctx.database.remove('binding', { platform, pid })
+      await database.remove('user', binding.aid)
+      await database.remove('binding', { platform, pid })
     } else {
-      await ctx.database.upsert('user', [{
+      await database.upsert('user', [{
         id: binding.aid,
         ...data,
       }])
@@ -150,25 +178,29 @@ export function apply(ctx: Context, config: Config) {
 
   ctx.on('console/connection', async (client) => {
     if (ctx.console.clients[client.id]) return
-    for (const platform of Object.keys(bots)) {
-      const bot = bots[platform]
-      bot.clients.delete(client)
-      if (!bot.clients.size) {
+    for (const [platform, bot] of Object.entries(bots)) {
+      if (bot.client === client) {
         delete bots[platform]
         delete ctx.bots[bot.sid]
       }
     }
   })
 
+  if (config.fileServer.enabled) {
+    ctx.server.get('/sandbox/:url(file:.+)', async (koa) => {
+      const { url } = koa.params
+      koa.type = extname(url)
+      koa.body = createReadStream(fileURLToPath(url))
+    })
+  }
+
   ctx.i18n.define('zh-CN', zhCN)
 
   ctx.intersect(session => session.platform.startsWith('sandbox:'))
     .command('clear')
     .action(({ session }) => {
-      for (const client of (session.bot as SandboxBot).clients) {
-        client.send({
-          type: 'sandbox/clear',
-        })
-      }
+      (session.bot as SandboxBot).client.send({
+        type: 'sandbox/clear',
+      })
     })
 }

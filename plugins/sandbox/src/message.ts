@@ -6,15 +6,21 @@ import { SandboxBot } from './bot'
 export class SandboxMessenger<C extends Context = Context> extends MessageEncoder<C, SandboxBot<C>> {
   private buffer = ''
 
-  private rules: Dict<h.Transformer> = Object.fromEntries(['image', 'audio', 'video', 'file'].map((type) => {
-    return [type, async (data) => {
-      if (data.url.startsWith('base64://')) {
-        const { mime } = await FileType.fromBuffer(Buffer.from(data.url.slice(9), 'base64'))
-        return h(type, { ...data, url: `data:${mime};base64,${data.url.slice(9)}` })
-      } else if (data.url.startsWith('file:') && this.bot.ctx.assets) {
-        return h(type, { ...data, url: await this.bot.ctx.assets.upload(data.url, data.url) })
+  private rules: Dict<h.Transformer> = Object.fromEntries(['image', 'img', 'audio', 'video', 'file'].map((type) => {
+    return [type, async (attrs) => {
+      const src = attrs.src || attrs.url
+      const type1 = type === 'image' ? 'img' : type
+      if (src.startsWith('base64://')) {
+        const { mime } = await FileType.fromBuffer(Buffer.from(src.slice(9), 'base64'))
+        return h(type1, { ...attrs, src: `data:${mime};base64,${src.slice(9)}` })
+      } else if (src.startsWith('file:')) {
+        if (this.bot.ctx.assets) {
+          return h(type1, { ...attrs, src: await this.bot.ctx.assets.upload(src, src) })
+        } else {
+          return h(type1, { ...attrs, src: `${this.bot.ctx.server.selfUrl}/sandbox/${src}` })
+        }
       }
-      return h(type, data)
+      return h(type1, { ...attrs, src })
     }]
   }))
 
@@ -23,18 +29,16 @@ export class SandboxMessenger<C extends Context = Context> extends MessageEncode
     const content = await h.transformAsync(this.buffer.trim(), this.rules)
     const session = this.bot.session(this.session.event)
     session.messageId = Random.id()
-    for (const client of this.bot.clients) {
-      client.send({
-        type: 'sandbox/message',
-        body: {
-          content,
-          user: 'Koishi',
-          channel: session.channelId,
-          id: session.messageId,
-          platform: session.platform,
-        },
-      })
-    }
+    this.bot.client.send({
+      type: 'sandbox/message',
+      body: {
+        content,
+        user: 'Koishi',
+        channel: session.channelId,
+        id: session.messageId,
+        platform: session.platform,
+      },
+    })
     this.results.push(session.event.message)
     this.buffer = ''
   }
