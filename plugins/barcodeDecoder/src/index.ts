@@ -43,7 +43,7 @@ const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
 }
 
 export function apply(ctx: Context) {
-  ctx.command('barcodeDecoder [image:text]').action(async (_, image) => {
+  ctx.command('botcmd-barcode [image:text]').action(async (_, image) => {
     const [code] = segment.select(image || [], 'img')
     const base64orUrl: string = code ? code.attrs.src : image
     try {

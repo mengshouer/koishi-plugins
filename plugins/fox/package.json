@@ -1,7 +1,7 @@
 {
   "name": "@mengshouer/koishi-plugin-fox",
   "description": "get a random fox image",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [

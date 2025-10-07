@@ -21,8 +21,8 @@ yarn add @mengshouer/koishi-plugin-url-sender
 ### 基本用法
 
 ```
-bot-send https://example.com/image.jpg
-bot-send https://example.com/video.mp4
+botcmd-send https://example.com/image.jpg
+botcmd-send https://example.com/video.mp4
 ```
 
 ### 支持的格式

@@ -86,7 +86,7 @@ export function apply(ctx: Context, config: Config) {
   const morntime = config.cronTime;
 
   ctx
-    .command("60s", "手动触发60s新闻发送到当前会话")
+    .command("botcmd-news", "手动触发60s新闻发送到当前会话")
     .action(() => getNewsMsg());
 
   try {

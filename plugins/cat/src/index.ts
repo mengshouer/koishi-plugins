@@ -7,7 +7,7 @@ export interface Config {}
 export const Config: Schema<Config> = Schema.object({})
 
 export function apply(ctx: Context) {
-  ctx.command('getcat').action(async () => {
+  ctx.command('botcmd-cat').action(async () => {
     const url = 'https://api.thecatapi.com/v1/images/search'
     const res = await ctx.http.get(url)
     return h.image(res?.[0].url)

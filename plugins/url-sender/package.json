@@ -1,7 +1,7 @@
 {
   "name": "@mengshouer/koishi-plugin-url-sender",
   "description": "Send images or videos by URL with automatic content type detection",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "files": [

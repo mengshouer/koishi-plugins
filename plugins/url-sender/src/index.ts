@@ -162,11 +162,11 @@ async function detectContentType(
 
 export function apply(ctx: Context, config: Config) {
   ctx
-    .command("bot-send <url>", "Send image or video from URL")
-    .example("bot-send https://example.com/image.jpg")
+    .command("botcmd-send <url>", "Send image or video from URL")
+    .example("botcmd-send https://example.com/image.jpg")
     .action(async (_, url) => {
       if (!url) {
-        return "Please provide a URL. Usage: /send <url>";
+        return "Please provide a URL. Usage: /botcmd-send <url>";
       }
 
       // Validate URL format
